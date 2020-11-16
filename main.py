@@ -8,6 +8,7 @@ SIZE = WIDTH, HEIGHT = 800, 600
 GREY = (128, 128, 128)
 GREEN = (0, 128, 0)
 WHITE = (200, 200, 200)
+block = True
 
 pg.init()
 pg.display.set_caption('Need For Speed Carbon')
@@ -21,6 +22,67 @@ bg_image_rect = bg_image.get_rect(topleft=(0, 0))
 bg_image_2_rect = bg_image.get_rect(topleft=(0, -HEIGHT))
 '''
 cars = [pg.image.load('Image/car1.png'), pg.image.load('Image/car3.png'), pg.image.load('Image/car2.png')]
+
+
+class Player(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+
+        self.image = pg.image.load('Image/car4.png')
+        self.orig_image = self.image
+        self.angle = 0
+        self.speed = 2
+        self.acceleration = 0.02
+        self.x, self.y = WIDTH // 2, HEIGHT // 2
+        self.rect = self.image.get_rect()
+        self.position = pg.math.Vector2(self.x, self.y)
+        self.velocity = pg.math.Vector2()
+
+    def update(self):
+        self.image = pg.transform.rotate(self.orig_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+        self.position += self.velocity
+        self.rect.center = self.position
+
+        keys = pg.key.get_pressed()
+        if keys[pg.K_RIGHT]:
+            self.velocity.x = self.speed
+            self.angle -= 1
+            if self.angle < -25:
+                self.angle = -25
+        elif keys[pg.K_LEFT]:
+            self.velocity.x = -self.speed
+            self.angle += 1
+            if self.angle > 25:
+                self.angle = 25
+        else:
+            self.velocity.x = 0
+            if self.angle < 0:
+                self.angle += 1
+            elif self.angle > 0:
+                self.angle -= 1
+        if keys[pg.K_UP]:
+            self.velocity.y -= self.acceleration
+            if self.velocity.y < -self.speed:
+                self.velocity.y = -self.speed
+        elif keys[pg.K_DOWN]:
+            self.velocity.y += self.acceleration
+            if self.velocity.y > self.speed:
+                self.velocity.y = self.speed
+        else:
+            if self.velocity.y < 0:
+                self.velocity.y += self.acceleration
+                if self.velocity.y > 0:
+                    self.velocity.y = 0
+            elif self.velocity.y < 0:
+                self.velocity.y -= self.acceleration
+                if self.velocity < 0:
+                    self.velocity.y = 0
+        if self.rect.left < 38:
+            self.rect.left = 40
+            self.angle -= .1
+            if self.angle >= 0:
+                self.angle = 0
 
 
 class Road(pg.sprite.Sprite):
@@ -62,7 +124,7 @@ class Car(pg.sprite.Sprite):
             list_x.remove(self.rect.centerx)
             while True:
                 self.rect.centerx = random.randrange(80, WIDTH, 80)
-                 if self.rect.centerx in list_x:
+                if self.rect.centerx in list_x:
                     continue
                 else:
                     list_x.append(self.rect.centerx)
@@ -84,12 +146,17 @@ while n < 6:
         list_x.append(x)
         all_sprite.add(Car(x, -cars[0].get_height(), cars[n] if n < len(cars) else random.choice(cars)))
         n += 1
+player = Player()
+all_sprite.add(player)
 
 game = True
 while game:
     for e in pg.event.get():
         if e.type == pg.QUIT:
             game = False
+        elif e.type == pg.MOUSEBUTTONDOWN:
+            if e.button:
+                pass
     '''
     car4.y -= 1
     if car4.y < -car4_h:
