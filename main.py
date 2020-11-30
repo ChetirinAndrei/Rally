@@ -26,7 +26,7 @@ bg_image_rect = bg_image.get_rect(topleft=(0, 0))
 bg_image_2_rect = bg_image.get_rect(topleft=(0, -HEIGHT))
 '''
 cars = [pg.image.load('Image/car1.png'), pg.image.load('Image/car3.png'), pg.image.load('Image/car2.png')]
-font = pg.font.Font(None, 32))
+font = pg.font.Font(None, 32)
 
 
 class Player(pg.sprite.Sprite):
@@ -163,7 +163,7 @@ while game:
         elif e.type == pg.MOUSEBUTTONDOWN:
             if e.button == 1:
                 #if c.collidepoint(e.pos)
-                    block = False
+                block = False
 
     if pg.sprite.spritecollideany(player, cars_group):
         if block is False:
@@ -198,10 +198,10 @@ while game:
     all_sprite.update()
     all_sprite.draw(screen)
     screen.blit(font.render(f'кол-во аварий = {car_accident}', True, GREEN), (50, 10))
-    screen.blit(font.render)
+    '''screen.blit(font.render)'''
 
     pg.display.update()
     clock.tick(FPS)
-    pg.display.set_caption(f'Need For Speed Carbon     FPS: {int(clock.get_fps())}'))
+    pg.display.set_caption(f'Need For Speed Carbon     FPS: {int(clock.get_fps())}')
 
 # pg.image.save(screen, 'Image/road.jpg')
